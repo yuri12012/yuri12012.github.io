@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파티 계산기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            font-size: 20px; /* 글씨 크기 조금 키움 */
+        }
+        .container {
+            width: 350px;
+            margin: 0 auto;
+        }
+        .party-box {
+            margin-bottom: 20px;
+        }
+        .party-box label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 22px; /* 레이블 글씨 크기 조금 키움 */
+        }
+        .party-box input[type="text"] {
+            font-size: 20px; /* 텍스트박스 크기 조금 키움 */
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .party-box input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.3); /* 체크박스 크기 키움 */
+        }
+        button {
+            font-size: 20px;
+            padding: 12px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 22px; /* 결과 글씨 크기 조금 키움 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>파티 계산기</h2>
+
+        <div class="party-box">
+            <input type="checkbox" id="party1-checkbox" onchange="toggleInput('party1')" style="transform: scale(1.3);">
+            <label for="party1">1번 파티:</label>
+            <input type="text" id="party1" placeholder="숫자를 띄어쓰기로 입력" disabled>
+        </div>
+
+        <div class="party-box">
+            <input type="checkbox" id="party2-checkbox" onchange="toggleInput('party2')" style="transform: scale(1.3);">
+            <label for="party2">2번 파티:</label>
+            <input type="text" id="party2" placeholder="숫자를 띄어쓰기로 입력" disabled>
+        </div>
+
+        <div class="party-box">
+            <input type="checkbox" id="party3-checkbox" onchange="toggleInput('party3')" style="transform: scale(1.3);">
+            <label for="party3">3번 파티:</label>
+            <input type="text" id="party3" placeholder="숫자를 띄어쓰기로 입력" disabled>
+        </div>
+
+        <button onclick="calculate()">계산하기</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const valueMap = {
+            55: 25000,
+            148: 75000,
+            290: 150000
+        };
+
+        function toggleInput(partyId) {
+            const checkbox = document.getElementById(`${partyId}-checkbox`);
+            const input = document.getElementById(partyId);
+            input.disabled = !checkbox.checked;
+        }
+
+        function calculate() {
+            let total = 0;
+
+            // 파티별 숫자 입력 처리
+            for (let i = 1; i <= 3; i++) {
+                let checkbox = document.getElementById(`party${i}-checkbox`);
+                if (checkbox.checked) {
+                    let partyInput = document.getElementById(`party${i}`).value.trim();
+                    if (partyInput) {
+                        let partyTotal = 0;
+                        let numbers = partyInput.split(" ").map(num => parseInt(num.trim(), 10));
+                        numbers.forEach(num => {
+                            if (valueMap[num]) {
+                                partyTotal += valueMap[num];
+                            }
+                        });
+                        total += partyTotal + 45000;
+                    } else {
+                        total += 45000;
+                    }
+                }
+            }
+
+            // 파티원 수 묻기
+            let partyMembers = prompt("파티원 수를 입력하세요");
+            if (partyMembers && !isNaN(partyMembers) && partyMembers > 0) {
+                let perPerson = Math.floor(total / parseInt(partyMembers, 10)); // 소수점 이하 버림 처리
+                document.getElementById("result").innerHTML = `1인당 분배금: ${perPerson} 골드`;
+            } else {
+                document.getElementById("result").innerHTML = "유효한 파티원 수를 입력해주세요.";
+            }
+        }
+    </script>
+</body>
+</html>
